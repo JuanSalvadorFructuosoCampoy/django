@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django CRUD aplicación</title>
+</head>
+<body>
+<nav>
+    <ul>
+        <li>
+            <a href="/">Inicio</a>
+        </li>
+        <li>
+            <a href="/tareas">Tareas</a>
+        </li>
+
+        <!-- * Esto es para que la pestaña de logout solo aparezca cuando el usuario está registrado. Al usar el User en views, se crea un objeto user que es global, y tiene esa variable is_authenticated, que nos permite verificar si está o no autenticado -->
+        {% if user.is_authenticated %}
+            <li>
+                <a href="/logout">Logout</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="/signup">Registro</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+    <!-- * Este bloque de contenido mostrará el resto de páginas de la aplicación, enmarcadas en el bloque llamado 'contenido'-->
+    {% block contenido %}
+    {% endblock %}
+</body>
+</html>
