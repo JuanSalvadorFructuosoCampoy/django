@@ -6,8 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 # Importamos el modelo de usuario de Django, para guardar los datos del usuario
 from django.contrib.auth.models import User
 
-# Importamos el sistema para guardar cookies
-from django.contrib.auth import login
+# Importamos el sistema para guardar cookies y para logout
+from django.contrib.auth import login, logout
 
 # Importamos el sistema para capturar errores de integridad de la base de datos
 from django.db import IntegrityError
@@ -53,3 +53,7 @@ def home(request):
 # * Función de la página que permite visualizar las tareas
 def tareas(request):
     return render(request, 'tareas.html')
+
+def cerrarSesion(request):
+    logout(request)
+    return redirect('home')

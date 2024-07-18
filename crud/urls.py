@@ -25,4 +25,5 @@ urlpatterns = [
     path('', views.home, name='home'), # * El atributo name permite usar el nombre de la URL en lugar de la URL en sí a la hora de redireccionar, por ejemplo, en un archivo HTML.
     path('signup/', views.signup, name='signup'),
     path('tareas/', views.tareas, name='tareas'),
+    path('logout/', views.cerrarSesion, name='logout'),
 ]
