@@ -12,26 +12,32 @@ from django.http import HttpResponse
 
 def signup(request):
     if request.method == "GET":
-        print("Mostrando formulario")
+        # Renderizamos el formulario preestablecido por Django
+        return render(request, 'signup.html', {'form': UserCreationForm()})
     else:
         if request.POST['password1'] == request.POST['password2']:
             # Esto es un bloque try-except, que se utiliza para capturar errores
             try:
                 # Registro de usuario
                 user = User.objects.create_user(
-                username=request.POST['username'], password=request.POST['password1'])
+                    username=request.POST['username'], password=request.POST['password1'])
                 user.save()
                 return HttpResponse("Usuario registrado correctamente")
             except:
-                return HttpResponse("El usuario ya existe")
+                # Renderizamos el formulario preestablecido por Django, esta vez con un mensaje de error indicando que el usuario ya existe
+                return render(request, 'signup.html', {
+                    'form': UserCreationForm(),
+                    'error': 'El usuario ya existe',
+                })
         else:
-            return HttpResponse("Las contraseñas no coinciden")
+            # Renderizamos el formulario preestablecido por Django, indicando el error de que las contraseñas no coinciden
+            return render(request, 'signup.html', {
+                'form': UserCreationForm(),
+                'error': 'Las contraseñas no coinciden',
+            })
 
         # !print("Enviando datos")
         # !print("Datos enviados: ", request.POST)
-
-  # Renderizamos el formulario preestablecido por Django
-    return render(request, 'signup.html', {'form': UserCreationForm()})
 
 
 def home(request):
