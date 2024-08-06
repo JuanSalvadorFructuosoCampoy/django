@@ -9,7 +9,7 @@
 <form action="/signup/" method="POST">
     {% csrf_token %} <!-- Este token es para evitar ataques de tipo CSRF -->
     
-    {{ form.as_p }} <!-- El .as_p mete todas las etiquetas del formulario en una etiqueta p, para que se vea mejor el formulario -->
+    {{ form.as_p }} <!-- Esta es la variable que incluye el formulario de creación de usuario. El as_p mete todas las etiquetas del formulario en una etiqueta p, para que se vea mejor el formulario -->
     <button>
         Registrar
     </button>

@@ -14,6 +14,9 @@
         <li>
             <a href="/tareas">Tareas</a>
         </li>
+        <li>
+            <a href="/nuevaTarea">Crear nueva tarea</a>
+        </li>
 
         <!-- * Esto es para que la pestaña de logout solo aparezca cuando el usuario está registrado. Al usar el User en views, se crea un objeto user que es global, y tiene esa variable is_authenticated, que nos permite verificar si está o no autenticado -->
         {% if user.is_authenticated %}
@@ -23,6 +26,9 @@
         {% else %}
             <li>
                 <a href="/signup">Registro</a>
+            </li>
+            <li>
+                <a href="/signin">Iniciar sesión</a>
             </li>
         {% endif %}
     </ul>

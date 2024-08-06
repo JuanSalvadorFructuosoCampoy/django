@@ -3,11 +3,14 @@ from django.shortcuts import render, redirect
 # Con esto, podemos usar un formulario de registro de usuario predeterminado por Django.
 from django.contrib.auth.forms import UserCreationForm
 
+# Importamos el formulario de autenticación de Django, para iniciar sesión de un usuario registrado
+from django.contrib.auth.forms import AuthenticationForm
+
 # Importamos el modelo de usuario de Django, para guardar los datos del usuario
 from django.contrib.auth.models import User
 
-# Importamos el sistema para guardar cookies y para logout
-from django.contrib.auth import login, logout
+# Importamos el sistema para guardar cookies, para logout y para autenticar un usuario que se ha introducido en el formulario de login
+from django.contrib.auth import login, logout, authenticate
 
 # Importamos el sistema para capturar errores de integridad de la base de datos
 from django.db import IntegrityError
@@ -17,8 +20,8 @@ from django.db import IntegrityError
 # * Función de registro de usuario
 def signup(request):
     if request.method == "GET":
-        # Renderizamos el formulario preestablecido por Django
-        return render(request, 'signup.html', {'form': UserCreationForm()})
+        # Renderizamos el formulario preestablecido por Django, además envía una variable llamada form, que es un formulario de creación de usuario. En el template de singup.html encontraremos entre llaves una variable llamada form, que es el formulario de creación de usuario.
+        return render(request, 'signup.html', {'form': UserCreationForm})
     else:
         if request.POST['password1'] == request.POST['password2']:
             # Esto es un bloque try-except, que se utiliza para capturar errores
@@ -54,6 +57,27 @@ def home(request):
 def tareas(request):
     return render(request, 'tareas.html')
 
+# * Función que permite cerrar la sesión del usuario
 def cerrarSesion(request):
     logout(request)
     return redirect('home')
+
+# * Función que permite iniciar sesión a un usuario ya registrado
+def iniciarSesion(request):
+    if request.method == "GET":
+        return render(request, 'iniciarSesion.html',{
+            'form': AuthenticationForm
+        })
+    else:
+        usuario = authenticate(request,username=request.POST['username'],password=request.POST['password'])
+        if usuario is None:
+            return render(request, 'iniciarSesion.html',{
+                'form': AuthenticationForm,
+                'error': 'Usuario y/o contraseña incorrectos'
+            })
+        else:
+            login(request, usuario)
+            return redirect('tareas')
+
+def nuevaTarea(request):
+    return render(request, 'nuevaTarea.html')

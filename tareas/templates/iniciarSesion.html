@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<h1>Iniciar Sesión</h1>
+{{ error }}
+<form action="" method="POST">
+    {% csrf_token %} <!-- Este token es para evitar ataques de tipo CSRF -->
+    {{ form.as_p }}
+    <button>Iniciar sesión</button>
+</form>
+
+{% endblock %}
