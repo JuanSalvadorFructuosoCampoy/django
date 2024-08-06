@@ -29,5 +29,5 @@ urlpatterns = [
     path('tareas/', views.tareas, name='tareas'),
     path('logout/', views.cerrarSesion, name='logout'),
     path('signin/', views.iniciarSesion, name='signin'),
-    path('nuevaTarea/', views.nuevaTarea, name='nuevaTarea'),
+    path('tareas/crear/', views.nuevaTarea, name='tareaNueva'),
 ]

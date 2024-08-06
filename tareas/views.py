@@ -15,6 +15,9 @@ from django.contrib.auth import login, logout, authenticate
 # Importamos el sistema para capturar errores de integridad de la base de datos
 from django.db import IntegrityError
 
+# Importamos el modelo de formulario de tareas creado en forms.py
+from .forms import TareaForm
+
 # Create your views here.
 
 # * Función de registro de usuario
@@ -80,4 +83,20 @@ def iniciarSesion(request):
             return redirect('tareas')
 
 def nuevaTarea(request):
-    return render(request, 'nuevaTarea.html')
+    if request.method == 'GET':
+        return render(request, 'nuevaTarea.html', {
+            'form': TareaForm()
+        })
+    else:
+        try:
+            formulario = TareaForm(request.POST) # Creamos un formulario con los datos enviados por el usuario
+            nuevaTarea = formulario.save(commit=False) # Guardamos el formulario en una variable
+            nuevaTarea.usuario = request.user # Asignamos el usuario que ha creado la tarea
+            nuevaTarea.save() # Guardamos la tarea en la base de datos
+            return redirect('tareas') # Redirigimos a la página de tareas
+        except ValueError:
+            return render(request, 'nuevaTarea.html', {
+                'form': TareaForm(),
+                'error': 'Error al guardar la tarea'
+                })
+        
