@@ -24,6 +24,8 @@ from .models import Tarea
 # Create your views here.
 
 # * Función de registro de usuario
+
+
 def signup(request):
     if request.method == "GET":
         # Renderizamos el formulario preestablecido por Django, además envía una variable llamada form, que es un formulario de creación de usuario. En el template de singup.html encontraremos entre llaves una variable llamada form, que es el formulario de creación de usuario.
@@ -56,42 +58,53 @@ def signup(request):
         # !print("Datos enviados: ", request.POST)
 
 # * Función de la página home
+
+
 def home(request):
     return render(request, 'home.html')
 
 # * Función de la página que permite visualizar las tareas
+
+
 def tareas(request):
     # Obtenemos todas las tareas de la base de datos
     #! tareas = Tarea.objects.all()
     # El anterior mostraba todas las tareas, ahora solo mostramos las tareas del usuario que ha iniciado sesión. En el segundo filtro indicamos que la fecha de completado sea nula, para que solo muestre las tareas que no han sido completadas.
-    tareas = Tarea.objects.filter(usuario=request.user, fechaCompletado__isnull=True)
-    
+    tareas = Tarea.objects.filter(
+        usuario=request.user, fechaCompletado__isnull=True)
+    print(tareas)
     # Renderizamos la página de tareas, enviando las tareas obtenidas de la base de datos
-    return render(request, 'tareas.html',{
+    return render(request, 'tareas.html', {
         'tareas': tareas
     })
 
 # * Función que permite cerrar la sesión del usuario
+
+
 def cerrarSesion(request):
     logout(request)
     return redirect('home')
 
 # * Función que permite iniciar sesión a un usuario ya registrado
+
+
 def iniciarSesion(request):
     if request.method == "GET":
-        return render(request, 'iniciarSesion.html',{
+        return render(request, 'iniciarSesion.html', {
             'form': AuthenticationForm
         })
     else:
-        usuario = authenticate(request,username=request.POST['username'],password=request.POST['password'])
+        usuario = authenticate(
+            request, username=request.POST['username'], password=request.POST['password'])
         if usuario is None:
-            return render(request, 'iniciarSesion.html',{
+            return render(request, 'iniciarSesion.html', {
                 'form': AuthenticationForm,
                 'error': 'Usuario y/o contraseña incorrectos'
             })
         else:
             login(request, usuario)
             return redirect('tareas')
+
 
 def nuevaTarea(request):
     if request.method == 'GET':
@@ -100,22 +113,41 @@ def nuevaTarea(request):
         })
     else:
         try:
-            formulario = TareaForm(request.POST) # Creamos un formulario con los datos enviados por el usuario
-            nuevaTarea = formulario.save(commit=False) # Guardamos el formulario en una variable
-            nuevaTarea.usuario = request.user # Asignamos el usuario que ha creado la tarea
-            nuevaTarea.save() # Guardamos la tarea en la base de datos
-            return redirect('tareas') # Redirigimos a la página de tareas
+            # Creamos un formulario con los datos enviados por el usuario
+            formulario = TareaForm(request.POST)
+            # Guardamos el formulario en una variable
+            nuevaTarea = formulario.save(commit=False)
+            nuevaTarea.usuario = request.user  # Asignamos el usuario que ha creado la tarea
+            nuevaTarea.save()  # Guardamos la tarea en la base de datos
+            return redirect('tareas')  # Redirigimos a la página de tareas
         except ValueError:
             return render(request, 'nuevaTarea.html', {
                 'form': TareaForm(),
                 'error': 'Error al guardar la tarea'
-                })
+            })
 
-#* Muestra el detalle de una tarea
+# * Muestra el detalle de una tarea
+
+
 def detalleTarea(request, idTarea):
-    # Obtenemos la tarea con el id que se ha pasado por parámetro, si no existe, nos muestra un 404
-    tarea = get_object_or_404(Tarea, pk=idTarea)
-    return render(request, 'detalleTarea.html',{
-        'tarea': tarea
-    })
-        
+    if request.method == 'GET':
+        # Obtenemos la tarea con el id que se ha pasado por parámetro, si no existe, nos muestra un 404
+        tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
+        # Creamos un formulario con la tarea obtenida, en instance=tarea, indicamos que los valores del formulario ya estén rellenados con los valores de la tarea
+        formulario = TareaForm(instance=tarea)
+        return render(request, 'detalleTarea.html', {
+            'tarea': tarea,
+            'form': formulario
+        })
+    else:
+        try:
+            tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
+            # TareaForm crea un formulario del tipo Tarea, siguiendo lo visto en forms.py. A continuación indica que envíe los datos a través de un formulario HTML y, finalmente, indica que guarde los datos en sobreescribiendo la tarea que se ha obtenido con get_object_or_404. Por eso, al ser un formulario que se encuentra en la propia página de detalleTarea, se sobreescribe la tarea con los nuevos datos.
+            TareaForm(request.POST, instance=tarea).save()
+            return redirect('tareas')
+        except ValueError:
+            return render(request, 'detalleTarea.html', {
+            'tarea': tarea,
+            'form': formulario,
+            'error': 'Error al guardar la tarea'
+        })
