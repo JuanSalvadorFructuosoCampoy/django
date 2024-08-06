@@ -30,4 +30,6 @@ urlpatterns = [
     path('logout/', views.cerrarSesion, name='logout'),
     path('signin/', views.iniciarSesion, name='signin'),
     path('tareas/crear/', views.nuevaTarea, name='tareaNueva'),
+    # La URL de detalleTarea recibe un parámetro, el id de la tarea que se quiere ver
+    path('tareas/<int:idTarea>/', views.detalleTarea, name='detalleTarea'),
 ]

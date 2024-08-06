@@ -11,12 +11,14 @@
         <li>
             <a href="/">Inicio</a>
         </li>
+        {% if user.is_authenticated %}
         <li>
             <a href="/tareas">Tareas</a>
         </li>
         <li>
             <a href="/tareas/crear">Crear nueva tarea</a>
         </li>
+        {% endif %}
 
         <!-- * Esto es para que la pestaña de logout solo aparezca cuando el usuario está registrado. Al usar el User en views, se crea un objeto user que es global, y tiene esa variable is_authenticated, que nos permite verificar si está o no autenticado -->
         {% if user.is_authenticated %}

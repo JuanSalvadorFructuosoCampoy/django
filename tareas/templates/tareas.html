@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
 {% block contenido %}
-<body>
-    <h1>Tareas</h1>
-</body>
+<h1>Tareas</h1>
+<ul>
+    {% for tarea in tareas %}
+    <li>
+        <!-- El detalle de la tarea tiene como primer parámetro la url a la que va, y el segundo parámetro es tarea.id. Nótese que no se llama igual que el parámetro de la función detalleTarea, sino que tenemos que poner obligatoriamente .id, ya que es el atributo id de la tarea en la base de datos-->
+        <a href="{% url 'detalleTarea' tarea.id %}">
+            {% if tarea.importante %}
+            <strong>IMPORTANTE</strong>
+            <br>
+            {% endif %}
+            <strong>{{ tarea.titulo }}</strong> - {{ tarea.descripcion }}. Realizado por <strong>{{
+                tarea.usuario.username }}</strong>
+    </li>
+    </a>
+    {% endfor %}
+</ul>
 {% endblock %}
+
 </html>

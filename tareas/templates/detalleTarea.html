@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<h1>Detalle de la tarea</h1>
+<ul>
+<li><strong>Titulo:</strong> {{ tarea.titulo }}</li>
+<li><strong>Descripción:</strong> {{ tarea.descripcion }}</li>
+<li><strong>Fecha de creación:</strong> {{ tarea.creado }}</li>
+{% if tarea.importante %}
+<li><strong>IMPORTANTE</strong></li>
+{% endif %}
+<li><strong>Creador:</strong> {{ tarea.usuario.username }}</li>
+</ul>
+{% endblock %}

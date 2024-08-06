@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
 # Con esto, podemos usar un formulario de registro de usuario predeterminado por Django.
 from django.contrib.auth.forms import UserCreationForm
@@ -17,6 +17,9 @@ from django.db import IntegrityError
 
 # Importamos el modelo de formulario de tareas creado en forms.py
 from .forms import TareaForm
+
+# Importamos el modelo de tareas creado en models.py
+from .models import Tarea
 
 # Create your views here.
 
@@ -58,7 +61,15 @@ def home(request):
 
 # * Función de la página que permite visualizar las tareas
 def tareas(request):
-    return render(request, 'tareas.html')
+    # Obtenemos todas las tareas de la base de datos
+    #! tareas = Tarea.objects.all()
+    # El anterior mostraba todas las tareas, ahora solo mostramos las tareas del usuario que ha iniciado sesión. En el segundo filtro indicamos que la fecha de completado sea nula, para que solo muestre las tareas que no han sido completadas.
+    tareas = Tarea.objects.filter(usuario=request.user, fechaCompletado__isnull=True)
+    
+    # Renderizamos la página de tareas, enviando las tareas obtenidas de la base de datos
+    return render(request, 'tareas.html',{
+        'tareas': tareas
+    })
 
 # * Función que permite cerrar la sesión del usuario
 def cerrarSesion(request):
@@ -99,4 +110,12 @@ def nuevaTarea(request):
                 'form': TareaForm(),
                 'error': 'Error al guardar la tarea'
                 })
+
+#* Muestra el detalle de una tarea
+def detalleTarea(request, idTarea):
+    # Obtenemos la tarea con el id que se ha pasado por parámetro, si no existe, nos muestra un 404
+    tarea = get_object_or_404(Tarea, pk=idTarea)
+    return render(request, 'detalleTarea.html',{
+        'tarea': tarea
+    })
         
