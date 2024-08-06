@@ -118,6 +118,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+#* Esta línea la hemos añadido para que Django sepa que, cuando se intente acceder a una dirección URL protegida y el usuario no esté logueado, redirija a la página de login.
+LOGIN_URL = '/signin'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

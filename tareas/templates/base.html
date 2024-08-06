@@ -13,10 +13,14 @@
         </li>
         {% if user.is_authenticated %}
         <li>
-            <a href="/tareas">Tareas</a>
+            <!-- Usamos los nombres de las urls en lugar de la dirección directamente. Los nombres los podemos ver en el archivo urls.py, en el atributo name de cada url -->
+            <a href="{% url 'tareas' %}">Tareas Pendientes</a>
         </li>
         <li>
-            <a href="/tareas/crear">Crear nueva tarea</a>
+            <a href="{%url 'tareasCompletadas' %}">Tareas Completadas</a>
+        </li>
+        <li>
+            <a href="{% url 'tareaNueva' %}">Crear nueva tarea</a>
         </li>
         {% endif %}
 

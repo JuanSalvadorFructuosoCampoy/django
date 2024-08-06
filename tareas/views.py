@@ -24,11 +24,13 @@ from .models import Tarea
 # Importamos el sistema de tiempo de Django
 from django.utils import timezone
 
+# Importamos el decorador de login de Django, que sirve para que solo los usuarios registrados puedan acceder a ciertas páginas.
+# En el archivo settings.py, en la variable LOGIN_URL, se indica la página a la que se redirige si un usuario no registrado intenta acceder a una página que requiere login.
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 # * Función de registro de usuario
-
-
 def signup(request):
     if request.method == "GET":
         # Renderizamos el formulario preestablecido por Django, además envía una variable llamada form, que es un formulario de creación de usuario. En el template de singup.html encontraremos entre llaves una variable llamada form, que es el formulario de creación de usuario.
@@ -61,36 +63,39 @@ def signup(request):
         # !print("Datos enviados: ", request.POST)
 
 # * Función de la página home
-
-
 def home(request):
     return render(request, 'home.html')
 
 # * Función de la página que permite visualizar las tareas
-
-
+@login_required # Con esto, solo los usuarios registrados pueden acceder a esta página
 def tareas(request):
     # Obtenemos todas las tareas de la base de datos
     #! tareas = Tarea.objects.all()
     # El anterior mostraba todas las tareas, ahora solo mostramos las tareas del usuario que ha iniciado sesión. En el segundo filtro indicamos que la fecha de completado sea nula, para que solo muestre las tareas que no han sido completadas.
     tareas = Tarea.objects.filter(
         usuario=request.user, fechaCompletado__isnull=True)
-    print(tareas)
     # Renderizamos la página de tareas, enviando las tareas obtenidas de la base de datos
+    return render(request, 'tareas.html', {
+        'tareas': tareas
+    })
+    
+#* Muestra la lista de las tareas completadas
+@login_required
+def tareasCompletadas(request):
+    # Funciona de forma muy similar a la función anterior, pero con la diferencia de que ahora fechaCompletado__isnull=False, para que solo muestre las tareas que han sido completadas.
+    tareas = Tarea.objects.filter(
+        # El order_by va a permitir mostrar la lista en función de la variable fechaCompletado, el - delante indica que va a ser en orden descendente
+    usuario=request.user, fechaCompletado__isnull=False).order_by('-fechaCompletado')
     return render(request, 'tareas.html', {
         'tareas': tareas
     })
 
 # * Función que permite cerrar la sesión del usuario
-
-
 def cerrarSesion(request):
     logout(request)
     return redirect('home')
 
 # * Función que permite iniciar sesión a un usuario ya registrado
-
-
 def iniciarSesion(request):
     if request.method == "GET":
         return render(request, 'iniciarSesion.html', {
@@ -109,6 +114,8 @@ def iniciarSesion(request):
             return redirect('tareas')
 
 
+#* Función que permite crear una nueva tarea
+@login_required
 def nuevaTarea(request):
     if request.method == 'GET':
         return render(request, 'nuevaTarea.html', {
@@ -130,8 +137,7 @@ def nuevaTarea(request):
             })
 
 # * Muestra el detalle de una tarea
-
-
+@login_required
 def detalleTarea(request, idTarea):
     if request.method == 'GET':
         # Obtenemos la tarea con el id que se ha pasado por parámetro, si no existe, nos muestra un 404
@@ -155,7 +161,8 @@ def detalleTarea(request, idTarea):
             'error': 'Error al guardar la tarea'
         })
 
-# Marca una tarea como completada y guarda la fecha de completado
+#* Marca una tarea como completada y guarda la fecha de completado
+@login_required
 def completarTarea(request, idTarea):
     tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
     if request.method == 'POST':
@@ -163,7 +170,8 @@ def completarTarea(request, idTarea):
         tarea.save()
         return redirect('tareas')
     
-#Elimina una tarea
+#* Elimina una tarea
+@login_required
 def eliminarTarea(request, idTarea):
     tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
     if request.method == 'POST':

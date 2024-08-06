@@ -11,6 +11,7 @@
             <br>
             {% endif %}
             <strong>{{ tarea.titulo }}</strong> - {{ tarea.descripcion }}.
+            <p>{{tarea.fechaCompletado|date:'j - M - Y'}}</p> <!-- En el caso de que la fecha esté completada, nos muestra la fecha en el formato siguiente: dia - Mes - año-->
     </li>
     </a>
     {% endfor %}

@@ -23,10 +23,11 @@ from tareas import views
 urlpatterns = [
     
     path('admin/', admin.site.urls),
-    # * El atributo name permite usar el nombre de la URL en lugar de la URL en sí a la hora de redireccionar, por ejemplo, en un archivo HTML.
+    # El atributo name permite usar el nombre de la URL en lugar de la URL en sí a la hora de redireccionar, por ejemplo, en un archivo HTML.
     path('', views.home, name='home'), 
     path('signup/', views.signup, name='signup'),
     path('tareas/', views.tareas, name='tareas'),
+    path('tareasCompletadas/', views.tareasCompletadas, name='tareasCompletadas'),
     path('logout/', views.cerrarSesion, name='logout'),
     path('signin/', views.iniciarSesion, name='signin'),
     path('tareas/crear/', views.nuevaTarea, name='tareaNueva'),
