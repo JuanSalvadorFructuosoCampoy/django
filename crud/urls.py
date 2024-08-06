@@ -32,4 +32,6 @@ urlpatterns = [
     path('tareas/crear/', views.nuevaTarea, name='tareaNueva'),
     # La URL de detalleTarea recibe un parámetro, el id de la tarea que se quiere ver
     path('tareas/<int:idTarea>/', views.detalleTarea, name='detalleTarea'),
+    path('tareas/<int:idTarea>/completar/', views.completarTarea, name='completarTarea'),
+    path('tareas/<int:idTarea>/eliminar/', views.eliminarTarea, name='eliminarTarea'),
 ]

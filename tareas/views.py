@@ -21,6 +21,9 @@ from .forms import TareaForm
 # Importamos el modelo de tareas creado en models.py
 from .models import Tarea
 
+# Importamos el sistema de tiempo de Django
+from django.utils import timezone
+
 # Create your views here.
 
 # * Función de registro de usuario
@@ -151,3 +154,19 @@ def detalleTarea(request, idTarea):
             'form': formulario,
             'error': 'Error al guardar la tarea'
         })
+
+# Marca una tarea como completada y guarda la fecha de completado
+def completarTarea(request, idTarea):
+    tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
+    if request.method == 'POST':
+        tarea.fechaCompletado = timezone.now()
+        tarea.save()
+        return redirect('tareas')
+    
+#Elimina una tarea
+def eliminarTarea(request, idTarea):
+    tarea = get_object_or_404(Tarea, pk=idTarea, usuario=request.user)
+    if request.method == 'POST':
+        tarea.delete()
+        return redirect('tareas')
+    

@@ -19,4 +19,15 @@
     </button>
 </form>
 
+<form action="{% url 'completarTarea' tarea.id %}"  method="POST">
+    {% csrf_token %}
+    <button>Completar</button>
+</form>
+
+
+<form action="{% url 'eliminarTarea' tarea.id %}"  method="POST">
+    {% csrf_token %}
+    <button>Borrar tarea</button>
+</form>
+
 {% endblock %}
